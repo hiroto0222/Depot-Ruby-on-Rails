@@ -24,3 +24,25 @@ end
 ```
 - The ```validates``` method is the standard Rails validator. It checks one or more model fields against one or more conditions.
 - ```presence: true``` tells the validator to check that each of the named fields is present and that its contents aren’t empty.
+
+### Iteration B2: Unit Testing of Models
+- Can specify fixture data in files in the test/fixtures directory. These files contain test data in YAML format.
+```ruby
+class ProductTest < ActiveSupport::TestCase
+  fixtures :products
+
+  # . . .
+
+  test "product is not valid without a unique title" do
+    product = Product.new(title: products(:ruby).title,
+                          description: "yyy",
+                          price: 1,
+                          image_url: "fred.gif")
+    assert product.invalid?
+    assert_equal [I18n.translate('errors.messages.taken')],
+                  product.errors[:title]
+  end
+
+  # . . .
+end
+```
